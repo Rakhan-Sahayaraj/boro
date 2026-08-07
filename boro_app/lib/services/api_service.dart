@@ -6,7 +6,7 @@ import 'storage_service.dart';
 class ApiService {
   static String get baseUrl {
     if (kReleaseMode) {
-      return 'https://boro-backend.onrender.com';
+      return 'https://boro-5z0p.onrender.com';
     }
     if (kIsWeb) return 'http://localhost:8000';
     if (defaultTargetPlatform == TargetPlatform.android) {

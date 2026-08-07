@@ -1,12 +1,9 @@
-import sqlite3
+import os
 import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 
-# Import directly from database without 'backend.' prefix
-from database import init_db
-
-SECRET_KEY = "your-super-secret-key-change-this"
+SECRET_KEY = os.environ.get("BORO_SECRET_KEY", "your-super-secret-key-change-this")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 Days
 

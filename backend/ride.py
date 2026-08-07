@@ -14,7 +14,9 @@ def ride_to_dict(row: sqlite3.Row) -> dict:
         "to_place": row["to_place"],
         "ride_date": row["ride_date"],
         "ride_time": row["ride_time"],
+        "available_seat": row["available_seat"],
         "helmet": bool(row["helmet"]),
+        "message": row["message"],
         "status": row["status"]
     }
 
@@ -44,8 +46,8 @@ def post_ride(
     cursor.execute(
         """
         INSERT INTO rides (
-            host_id, from_place, to_place, ride_date, ride_time, helmet, available_seat, status
-        ) VALUES (?, ?, ?, ?, ?, ?, 1, 'Available')
+            host_id, from_place, to_place, ride_date, ride_time, helmet, available_seat, message, status
+        ) VALUES (?, ?, ?, ?, ?, ?, 1, ?, 'Available')
         """,
         (
             host_id,
@@ -53,7 +55,8 @@ def post_ride(
             ride.to_place,
             ride.ride_date,
             ride.ride_time,
-            int(ride.helmet)
+            int(ride.helmet),
+            ride.message
         )
     )
 
@@ -75,7 +78,7 @@ def logout_cleanup(
     cursor.execute("DELETE FROM rides WHERE host_id = ? AND status = 'Available'", (student_id,))
 
     # 2. Cancel all pending booking requests created by this Passenger/Pillion
-    cursor.execute("UPDATE booking_requests SET status = 'CANCELLED' WHERE passenger_id = ? AND status = 'PENDING'", (student_id,))
+    cursor.execute("UPDATE booking_requests SET status = 'Cancelled' WHERE passenger_id = ? AND status = 'Pending'", (student_id,))
 
     db.commit()
     return {"message": "Active rides and pending requests cancelled on logout."}
@@ -89,7 +92,7 @@ def get_rides(db: sqlite3.Connection = Depends(get_db)):
     cursor = db.cursor()
 
     cursor.execute("""
-        SELECT id, host_id, from_place, to_place, ride_date, ride_time, helmet, status
+        SELECT id, host_id, from_place, to_place, ride_date, ride_time, available_seat, helmet, message, status
         FROM rides
         WHERE status = 'Available'
         ORDER BY ride_date, ride_time
@@ -112,7 +115,7 @@ def my_rides(
 
     cursor.execute(
         """
-        SELECT id, host_id, from_place, to_place, ride_date, ride_time, helmet, status
+        SELECT id, host_id, from_place, to_place, ride_date, ride_time, available_seat, helmet, message, status
         FROM rides
         WHERE host_id = ?
         ORDER BY ride_date, ride_time

@@ -12,9 +12,8 @@ router = APIRouter(
 )
 
 
-# ==========================================
+
 # Pydantic Schemas
-# ==========================================
 
 class ChangePasswordSchema(BaseModel):
     old_password: str = Field(..., min_length=6)
@@ -22,13 +21,12 @@ class ChangePasswordSchema(BaseModel):
 
 
 class BikeUpdateSchema(BaseModel):
-    bike_model: str = Field(..., example="Yamaha FZ")
-    bike_number: str = Field(..., example="KA-01-AB-1234")
+    bike_model: str = Field(..., json_schema_extra={"example": "Yamaha FZ"})
+    bike_number: str = Field(..., json_schema_extra={"example": "KA-01-AB-1234"})
 
 
-# ==========================================
 # My Profile
-# ==========================================
+
 
 @router.get("/profile")
 def my_profile(
@@ -73,9 +71,7 @@ def my_profile(
     }
 
 
-# ==========================================
 # Update Bike Details
-# ==========================================
 
 @router.put("/bike")
 def update_bike(
@@ -103,9 +99,7 @@ def update_bike(
     return {"message": "Bike details updated successfully."}
 
 
-# ==========================================
 # Change Password
-# ==========================================
 
 @router.put("/change-password")
 def change_password(
@@ -138,9 +132,7 @@ def change_password(
     return {"message": "Password updated successfully."}
 
 
-# ==========================================
 # My Posted Rides
-# ==========================================
 
 @router.get("/my-rides")
 def my_posted_rides(
@@ -181,9 +173,8 @@ def my_posted_rides(
     return {"rides": rides}
 
 
-# ==========================================
+
 # My Booking Requests
-# ==========================================
 
 @router.get("/my-bookings")
 def my_bookings(
@@ -229,9 +220,7 @@ def my_bookings(
     return {"bookings": bookings}
 
 
-# ==========================================
 # Delete My Account
-# ==========================================
 
 @router.delete("/delete")
 def delete_account(

@@ -55,6 +55,7 @@ def init_db():
             available_seat INTEGER DEFAULT 1,
             helmet INTEGER DEFAULT 0,
             status TEXT DEFAULT 'Available',
+            message TEXT,
             FOREIGN KEY(host_id) REFERENCES students(id) ON DELETE CASCADE
         )
         """)
@@ -99,8 +100,23 @@ def init_db():
         )
         """)
 
+        # 6. Chat Messages Table
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            booking_id INTEGER NOT NULL,
+            sender_id INTEGER NOT NULL,
+            message TEXT,
+            proposed_price REAL,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(booking_id) REFERENCES booking_requests(id) ON DELETE CASCADE,
+            FOREIGN KEY(sender_id) REFERENCES students(id) ON DELETE CASCADE
+        )
+        """)
+
         connection.commit()
     print("Database Ready!")
 
 # Initialize tables on load
-init_db()
+# init_db()

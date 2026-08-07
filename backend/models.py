@@ -7,16 +7,16 @@ from pydantic import BaseModel, Field
 # ==========================
 
 class StudentRegister(BaseModel):
-    name: str = Field(..., min_length=2, example="Alex Smith")
-    reg_no: str = Field(..., min_length=3, example="REG12345")
-    college: str = Field(..., example="Engineering Campus")
-    phone: str = Field(..., min_length=10, max_length=15, example="9876543210")
-    password: str = Field(..., min_length=6, example="secret123")
+    name: str = Field(..., min_length=2, json_schema_extra={"example": "Alex Smith"})
+    reg_no: str = Field(..., min_length=3, json_schema_extra={"example": "REG12345"})
+    college: str = Field(..., json_schema_extra={"example": "Engineering Campus"})
+    phone: str = Field(..., min_length=10, max_length=15, json_schema_extra={"example": "9876543210"})
+    password: str = Field(..., min_length=6, json_schema_extra={"example": "secret123"})
     
     # Bike details (Optional for passengers)
     has_bike: bool = False
-    bike_model: Optional[str] = Field(None, example="Yamaha FZ")
-    bike_number: Optional[str] = Field(None, example="KA-01-AB-1234")
+    bike_model: Optional[str] = Field(None, json_schema_extra={"example": "Yamaha FZ"})
+    bike_number: Optional[str] = Field(None, json_schema_extra={"example": "KA-01-AB-1234"})
 
 
 class StudentLogin(BaseModel):
@@ -29,13 +29,13 @@ class StudentLogin(BaseModel):
 # ==========================
 
 class RideCreate(BaseModel):
-    from_place: str = Field(..., example="Campus Gate A")
-    to_place: str = Field(..., example="Metro Station")
-    ride_date: str = Field(..., example="2026-08-01")
-    ride_time: str = Field(..., example="17:30")
-    available_seat: int = Field(default=1, ge=1, le=4, example=1)
+    from_place: str = Field(..., json_schema_extra={"example": "Campus Gate A"})
+    to_place: str = Field(..., json_schema_extra={"example": "Metro Station"})
+    ride_date: str = Field(..., json_schema_extra={"example": "2026-08-01"})
+    ride_time: str = Field(..., json_schema_extra={"example": "17:30"})
+    available_seat: int = Field(default=1, ge=1, le=4, json_schema_extra={"example": 1})
     helmet: bool = True
-    message: Optional[str] = Field(None, example="Leaving on time, helmet available.")
+    message: Optional[str] = Field(None, json_schema_extra={"example": "Leaving on time, helmet available."})
 
 
 class RideUpdate(BaseModel):

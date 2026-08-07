@@ -10,6 +10,8 @@ from auth import router as auth_router
 from booking import router as booking_router
 from ride import router as rides_router
 from notification import router as notification_router
+from chat import router as chat_router
+from student import router as student_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,6 +40,8 @@ app.include_router(auth_router)
 app.include_router(booking_router)
 app.include_router(rides_router)
 app.include_router(notification_router)
+app.include_router(chat_router)
+app.include_router(student_router)
 
 @app.get("/", tags=["Health"])
 def root():

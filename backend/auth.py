@@ -3,13 +3,12 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, Field
 
 from database import get_db
 from utils import hash_password, verify_password, create_access_token, verify_token
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+from dependencies import get_current_student
 
 # --- SCHEMAS ---
 class StudentRegister(BaseModel):
@@ -30,20 +29,11 @@ class BikeUpdateSchema(BaseModel):
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 # --- CURRENT USER DEPENDENCY ---
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    payload = verify_token(token)
-    if not payload:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return payload  # Contains {"student_id": ..., "reg_no": ...}
 
 # --- GET LOGGED-IN USER PROFILE ---
 @router.get("/me")
 def get_me(
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(get_current_student),
     db: sqlite3.Connection = Depends(get_db)
 ):
     db.row_factory = sqlite3.Row
@@ -186,7 +176,7 @@ def login(
 @router.put("/update-bike")
 def update_bike(
     data: BikeUpdateSchema,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(get_current_student),
     db: sqlite3.Connection = Depends(get_db)
 ):
     student_id = current_user.get("student_id")

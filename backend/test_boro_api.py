@@ -3,9 +3,8 @@ import sqlite3
 import pytest
 from fastapi.testclient import TestClient
 
-# Corrected module imports to work from project root (Boro/)
-from backend.main import app
-from backend.database import get_db
+from main import app
+from database import get_db
 
 TEST_DB_FILE = "test_boro.db"
 
@@ -28,6 +27,7 @@ def setup_test_database():
     with sqlite3.connect(TEST_DB_FILE) as conn:
         cursor = conn.cursor()
         cursor.execute("PRAGMA foreign_keys = OFF;")
+        cursor.execute("DROP TABLE IF EXISTS chat_messages;")
         cursor.execute("DROP TABLE IF EXISTS notifications;")
         cursor.execute("DROP TABLE IF EXISTS confirmed_bookings;")
         cursor.execute("DROP TABLE IF EXISTS booking_requests;")
@@ -59,7 +59,8 @@ def setup_test_database():
                 ride_time TEXT NOT NULL,
                 helmet INTEGER DEFAULT 0,
                 available_seat INTEGER DEFAULT 1,
-                status TEXT DEFAULT 'Available'
+                status TEXT DEFAULT 'Available',
+                message TEXT
             );
         """)
         cursor.execute("""
@@ -85,6 +86,17 @@ def setup_test_database():
                 title TEXT NOT NULL,
                 message TEXT NOT NULL,
                 is_read INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        cursor.execute("""
+            CREATE TABLE chat_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                booking_id INTEGER NOT NULL,
+                sender_id INTEGER NOT NULL,
+                message TEXT,
+                proposed_price REAL,
+                status TEXT DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)

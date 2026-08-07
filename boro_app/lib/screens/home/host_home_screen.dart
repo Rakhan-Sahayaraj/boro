@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
+import 'package:intl/intl.dart';
 import '../auth/login_screen.dart';
 import 'requests_screen.dart';
 import 'chat_screen.dart';
@@ -80,8 +81,9 @@ class _HostHomeScreenState extends State<HostHomeScreen> {
         text: isEditing ? (existingRide['from_place'] ?? '') : '');
     final toController = TextEditingController(
         text: isEditing ? (existingRide['to_place'] ?? '') : '');
+    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final dateController = TextEditingController(
-        text: isEditing ? (existingRide['ride_date'] ?? '2026-08-02') : '2026-08-02');
+        text: isEditing ? (existingRide['ride_date'] ?? today) : today);
     final timeController = TextEditingController(
         text: isEditing ? (existingRide['ride_time'] ?? '09:00 AM') : '09:00 AM');
 
